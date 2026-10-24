@@ -5,7 +5,7 @@ import { FaBars } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 
 const NavBar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="bg-white shadow-md fixed w-full z-50">
@@ -21,13 +21,14 @@ const NavBar = () => {
             <Link className="hover:text-blue-600">Contact</Link>
           </div>
           {/* Admin */}
+          <Link to={"/admin-login"}>
           <div className="hidden md:flex items-center space-x-3">
-            <button className="flex items-center gap-2 rounded-full text-sm cursor-pointer bg-indigo-500 px-10 py-2 text-white">
+            <button className="flex items-center gap-2 rounded-full text-sm cursor-pointer bg-indigo-500 px-10 py-2 text-white hover:bg-indigo-600">
               Admin Login
               <MdArrowCircleRight className="text-xl" />
             </button>
           </div>
-
+          </Link>
           {/* Mobile Menu Button*/}
           <div className="md:hidden">
             <button
@@ -51,7 +52,7 @@ const NavBar = () => {
           <Link className="hover:text-blue-600 block">Blogs</Link>
           <Link className="hover:text-blue-600 block">About</Link>
           <Link className="hover:text-blue-600 block">Contact</Link>
-          <button className=" flex justify-center items-center w-full rounded-4xl text-sm bg-indigo-500 px-10 py-2.5 gap-2 text-white">
+          <button className=" flex justify-center items-center w-full rounded-4xl text-sm bg-indigo-500 px-10 py-2.5 gap-2 text-white ">
             Admin Login <MdArrowCircleRight className="text-2xl"/>
           </button>
         </div>
