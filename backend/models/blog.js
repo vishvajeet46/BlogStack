@@ -9,10 +9,9 @@ const blogSchema = new Schema(
     description: { type: String, required: true },
     category: { type: String, required: true },
     publish: { type: String, required: true },
+    blogImage: { type: String, required: true },
   },
   { timestamps: true },
 );
 
-
-
-module.exports = model("blog", blogSchema)
+module.exports = model("blog", blogSchema);

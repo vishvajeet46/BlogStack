@@ -29,18 +29,27 @@ const CreateBlog = () => {
 
   function handleForm(e) {
     e.preventDefault();
-    const formData = {
-      blogTitle,
-      blogSubTitle,
-      blogCategory,
-      blogDesc,
-      blogAction,
-    }
+
+    const formData = new FormData()
+    formData.append("blogTitle",blogTitle)
+    formData.append("blogSubTitle",blogSubTitle)
+    formData.append("blogCategory",blogCategory)
+    formData.append("blogDesc",blogDesc)
+    formData.append("blogAction",blogAction)
+    formData.append("image",image)
+
+
+    // const formData = {
+    //   blogTitle,
+    //   blogSubTitle,
+    //   blogCategory,
+    //   blogDesc,
+    //   blogAction,
+    // }
 
     fetch("/api/create-blog",{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(formData)
+      body:formData
     }).then((res)=>{return res.json()}).then((data)=>{
       if(data.success){
           toast.success(data.message)
@@ -59,6 +68,8 @@ const CreateBlog = () => {
           action=""
           className="bg-white shadow-md rounded-xl p-6 max-w-5xl mx-auto space-y-6 mt-5"
           onSubmit={handleForm}
+          method="post"
+          encType="multipart/form-data"
         >
           <label
             htmlFor="image"

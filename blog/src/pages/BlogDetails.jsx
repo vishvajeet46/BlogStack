@@ -1,5 +1,8 @@
-import { FaUserCircle } from "react-icons/fa"; 
+import { useEffect, useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+import DOMPurify from "dompurify"
 
 //API se aayega
 const blogData = {
@@ -11,6 +14,21 @@ const blogData = {
 };
 
 const BlogDetails = () => {
+  const { id } = useParams();
+  
+  const [blogs,setBlogs] = useState([])
+
+  useEffect(() => {
+    fetch(`/api/blog-details-pages/${id}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data)
+        setBlogs(data.blog)
+      });
+  }, []);
+
   return (
     <div className="bg-gray-100 min-h-screen py-20 px-3">
       <div className="max-w-5xl mx-auto">
@@ -19,87 +37,31 @@ const BlogDetails = () => {
         </div>
         {/* Title */}
         <h1 className="text-3xl md:text-4xl font-bold text-center">
-          {blogData.title}
+          {blogs.title}
         </h1>
         {/* Category */}
         <div className="flex justify-center mt-3">
           <span className="bg-blue-100 text-blue-600 px-4 py-1.5 rounded-full text-sm">
-            {blogData.category}
+            {blogs.category}
           </span>
         </div>
         {/* image */}
         <div className="mt-6">
           <img
-            src={blogData.image}
-            alt={blogData.title}
+            src={`http://localhost:5000/uploads/${blogs.blogImage}`}
+            alt={blogs.title}
             className="w-full h-90 object-cover rounded-xl"
           />
         </div>
         {/* Description */}
         <h2 className="mt-6 text-xl font-semibold text-center">
-          {blogData.desc}
+          {blogs.subTitle}
         </h2>
         {/* Content */}
         <div className="mt-4 space-y-4 text-gray-700 leading-relaxed text-sm">
-          <p>
-            For over a decade, web architecture followed a predictable rhythm:
-            centralise logic and database in hyperscale cloud regions (like
-            us-east-1), push static assets outward to a Content Delivery Network
-            (CDN), and hope international latency remained tolerable. That model
-            has hit its architectural ceiling. Today’s web users demand
-            sub-100-millisecond interactions, dynamic personalization, and
-            instantaneous search. Centralised data centres cannot alter the
-            speed of light—transmitting a request across the globe and back
-            introduces unavoidable round-trip delays. Edge computing
-            fundamentally redesigns this flow by running server-side logic at
-            distributed Points of Presence (PoPs) directly adjacent to the end
-            user.
-          </p>
-          <h3 className="font-medium text-2xl">
-            From Dumb Caches to Programmable Nodes
-          </h3>
-          <h3 className="font-semibold text-base">
-            Traditional CDNs (Static Caching):
-          </h3>
-          <p>
-            Edge servers strictly cached static files (.js, .css, images).
-            Dynamic API requests bypassed the CDN and went straight back to the
-            central origin server.
-          </p>
-          <h3 className="font-semibold text-base">
-            Traditional CDNs (Static Caching):
-          </h3>
-          <p>
-            Edge servers strictly cached static files (.js, .css, images).
-            Dynamic API requests bypassed the CDN and went straight back to the
-            central origin server.
-          </p>
-          <h3 className="font-semibold text-base">
-            Traditional CDNs (Static Caching):
-          </h3>
-          <p>
-            Edge servers strictly cached static files (.js, .css, images).
-            Dynamic API requests bypassed the CDN and went straight back to the
-            central origin server.
-          </p>
-          <h3 className="font-semibold text-base">
-            Traditional CDNs (Static Caching):
-          </h3>
-          <p>
-            Edge servers strictly cached static files (.js, .css, images).
-            Dynamic API requests bypassed the CDN and went straight back to the
-            central origin server.
-          </p>
-          <h3 className="font-medium text-2xl">The Pragmatic Takeaway</h3>
-          <p>
-            Edge computing is not a universal replacement for standard cloud
-            backends. Heavy background jobs, long-running batch data pipelines,
-            and complex relational transactions still belong in centralized
-            cloud regions. Instead, modern web engineering has settled on a
-            hybrid continuum: central clouds handle transactional data integrity
-            and complex heavy lifting, while distributed edge runtimes manage
-            routing, security gates, HTML streaming, and UI delivery.
-          </p>
+            <div dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(blogs.description)}}>
+            </div>
+            
           <div className="my-8 border-t"></div>
 
           {/* Comment Section */}
@@ -134,11 +96,18 @@ const BlogDetails = () => {
           </div>
 
           {/* Share */}
-          <div className="mt-10 text-center text-sm text-gray-500">Share this article on 
+          <div className="mt-10 text-center text-sm text-gray-500">
+            Share this article on
             <div className="flex justify-center gap-4 mt-2">
-                <span className="cursor-pointer "><FaFacebook className="text-2xl text-blue-600"/></span>
-                <span className="cursor-pointer "><FaInstagram className="text-2xl text-red-600"/></span>
-                <span className="cursor-pointer "><FaTwitter className="text-2xl text-blue-600"/></span>
+              <span className="cursor-pointer ">
+                <FaFacebook className="text-2xl text-blue-600" />
+              </span>
+              <span className="cursor-pointer ">
+                <FaInstagram className="text-2xl text-red-600" />
+              </span>
+              <span className="cursor-pointer ">
+                <FaTwitter className="text-2xl text-blue-600" />
+              </span>
             </div>
           </div>
         </div>

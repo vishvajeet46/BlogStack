@@ -20,6 +20,9 @@ const adminLogin = (req, res) => {
 
 const adminCreateBlog = async (req, res) => {
   try {
+
+    const BImage = req.file.filename
+
     const { blogTitle, blogSubTitle, blogCategory, blogDesc, blogAction } =
       req.body;
     if (
@@ -40,6 +43,7 @@ const adminCreateBlog = async (req, res) => {
       description: blogDesc,
       category: blogCategory,
       publish: blogAction,
+      blogImage: BImage,
     });
 
     await record.save();
@@ -51,34 +55,56 @@ const adminCreateBlog = async (req, res) => {
   }
 };
 
-const adminAllBlogData = async (req,res)=>{
+const adminAllBlogData = async (req, res) => {
   try {
     const data = await blogModel.find();
-    res.status(200).json({success: true,blogData: data})
+    res.status(200).json({ success: true, blogData: data });
   } catch (error) {
-    res.status(500).json({success: false,message: "Internal server error"})
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
-}
+};
 
-const adminBlogDelete = async (req,res)=>{
+const adminBlogDelete = async (req, res) => {
   try {
-    const id = req.params.abc
-    await blogModel.findByIdAndDelete(id)
-    res.status(200).json({success: true,message:"Successfully Deleted "})
+    const id = req.params.abc;
+    await blogModel.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: "Successfully Deleted " });
   } catch (error) {
-    res.status(500).json({success: false, message: "Internal server error "})
+    res.status(500).json({ success: false, message: "Internal server error " });
   }
-}
+};
 
-const adminBlogEditData = async (req,res)=>{
+const adminBlogEditData = async (req, res) => {
   try {
-    const id =req.params.abc
-    const data = await blogModel.findById(id)
-    res.status(200).json({success:true,editData:data})
+    const id = req.params.abc;
+    const data = await blogModel.findById(id);
+    res.status(200).json({ success: true, editData: data });
   } catch (error) {
-    res.status(500).json({success: false, message: "Internal server error "})
+    res.status(500).json({ success: false, message: "Internal server error " });
   }
-}
+};
+
+const adminBlogUpdate = async (req, res) => {
+  try {
+    const id = req.params.abc;
+    const { blogTitle, blogSubTitle, blogDesc, blogAction, blogCategory } = req.body;
+
+    await blogModel.findByIdAndUpdate(id, {
+      title: blogTitle,
+      subTitle: blogSubTitle,
+      description: blogDesc,
+      category: blogCategory,
+      publish: blogAction,
+    });
+
+    res.status(200).json({success:true,message:"Successfully edit..."})
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error " });
+  }
+};
+
+
 
 module.exports = {
   adminLogin,
@@ -86,4 +112,5 @@ module.exports = {
   adminAllBlogData,
   adminBlogDelete,
   adminBlogEditData,
+  adminBlogUpdate,
 };

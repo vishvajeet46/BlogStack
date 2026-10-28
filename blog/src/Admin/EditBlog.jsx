@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import UploadImage from "../assets/image-upload.png";
 import Quill from "quill";
-import {useParams} from "react-router-dom"
+import { useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+
 
 const EditBlog = () => {
   const [blogTitle, setBlogTitle] = useState("");
@@ -13,9 +15,29 @@ const EditBlog = () => {
   const EditorQuill = useRef(null);
   const QuillRef = useRef(null);
 
+  const { id } = useParams();
 
-  const {id} = useParams()
+  function fetchBlogs(){
+    fetch(`/api/blog-edit/${id}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setBlogTitle(data.editData.title);
+        setBlogSubTitle(data.editData.subTitle);
+        setBlogCategory(data.editData.category);
+        setBlogAction(data.editData.publish);
+        setBlogDesc(data.editData.description);
 
+        QuillRef.current.root.innerHTML= data.editData.description
+
+      });
+
+    //   if (QuillRef.current && blogDesc) {
+    //   QuillRef.current.root.innerHTML = blogDesc;
+    // }
+  }
 
   useEffect(() => {
     if (!QuillRef.current && EditorQuill.current) {
@@ -26,20 +48,35 @@ const EditBlog = () => {
       setBlogDesc(QuillRef.current.root.innerHTML);
     });
 
-    if(QuillRef.current){
-        QuillRef.current.root.innerHTML = blogDesc
-    }
+    fetchBlogs()
+    
+  }, []);
 
-    fetch(`/api/blog-edit/${id}`).then((res)=>{return res.json()}).then((data)=>{
-        console.log(data)
-        setBlogTitle(data.editData.title)
-        setBlogSubTitle(data.editData.subTitle)
-        setBlogCategory(data.editData.category)
-        setBlogAction(data.editData.publish)
-        setBlogDesc(data.editData.description)
+  function handleForm(e) {
+    e.preventDefault();
+    const formData = {
+      blogTitle,
+      blogSubTitle,
+      blogCategory,
+      blogDesc,
+      blogAction,
+    };
+    fetch(`/api/blog-update/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
     })
-
-  }, [blogDesc]);
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          toast.success(data.message);
+        } else {
+          toast.error(data.error);
+        }
+      });
+  }
 
   return (
     <div className="flex mt-10">
@@ -48,8 +85,8 @@ const EditBlog = () => {
         <form
           action=""
           className="bg-white shadow-md rounded-xl p-6 max-w-5xl mx-auto space-y-6 mt-5"
+          onSubmit={handleForm}
         >
-          
           <label htmlFor="" className="block text-gray-700 font-medium mb-1">
             Blog Title
           </label>

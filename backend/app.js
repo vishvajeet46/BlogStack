@@ -19,7 +19,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/blog_app").then(()=>{console.log("Su
 app.use(express.json());
 app.use(cors());
 app.use("/api",blogRoute)
-
+app.use(express.static("public"))
 
 
 

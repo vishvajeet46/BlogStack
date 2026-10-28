@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Categories = [
@@ -9,6 +9,8 @@ const Categories = [
   "Finance",
   "Food",
 ];
+
+
 
 const blogData = [
   {
@@ -95,6 +97,14 @@ const blogData = [
 
 const Blogs = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [blogs, setBlogs] = useState([])
+
+  useEffect(()=>{
+    fetch("/api/user-blog-data").then((res)=>{return res.json()}).then((data)=>{
+      console.log(data)
+      setBlogs(data.blogData)
+    })
+  },[])
 
   const filterBlogs =
     activeCategory === "All"
@@ -121,12 +131,12 @@ const Blogs = () => {
       </div>
       {/* Blog cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-4">
-        {filterBlogs.map((blog) => (
-          <Link to="/blog-details">
+        {blogs.map((blog) => (
+          <Link to={`/blog-details/${blog._id}`}>
             <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow hover:shadow-blue-200 transition h-full">
               {/* img */}
               <img
-                src={blog.image}
+                src={`http://localhost:5000/uploads/${blog.blogImage}`}
                 alt={blog.title}
                 className="h-48 w-full object-cover"
               />
@@ -139,7 +149,7 @@ const Blogs = () => {
                 {/* Title */}
                 <h2 className="p-2 text-lg font-semibold">{blog.title}</h2>
                 {/* Description */}
-                <p className="text-sm px-2 text-gray-500">{blog.desc}</p>
+                <p className="text-sm px-2 text-gray-500">{blog.description}</p>
               </div>
             </div>
           </Link>
